@@ -1,0 +1,345 @@
+/* 聊天窗口样式*/
+body,ul,li,p,h3{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+.ms-controller{
+    visibility: hidden
+}
+.no-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currentlynot supported by any browser */
+}
+.wrap{
+    width: 730px;
+    height: 623px;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: url("./Shadow.png") center center no-repeat;
+}
+.container{
+    width: 642px;
+    height: 520px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #F1F1F1;
+}
+.header{
+    width: 640px;
+    height: 90px;
+    background-color: rgb(130, 125, 207);
+    padding: 0 20px;
+    line-height: 90px;
+    position: relative;
+    box-sizing: border-box;
+}
+.header>img{
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    transform: translateY(-20px);
+    margin-right: 21px;
+    border-radius: 50%;
+}
+.header>span{
+    display: inline-block;
+    color: #ffffff;
+    font-size: 34px;
+    width: 200px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.header>i{
+    position: absolute;
+    right: 20px;
+    top:50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height:36px;
+    background-image: url("./Settings Icon.png");
+}
+.header>i:hover{
+    cursor: pointer;
+}
+.header>i:active{
+    opacity: .7;
+}
+.main{
+    width: 660px;
+    height: 320px;
+    background-color: #ffffff;
+    overflow-y: scroll;
+}
+.footer{
+    width: 600px;
+    height: 70px;
+    margin: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    padding: 0 31px;
+}
+.footer>i{
+    position: absolute;
+    top: 50%;
+    width: 26px;
+    height: 28px;
+    background-image: url("./Attachment.png");
+    transform: translateY(-50%);
+}
+.footer>input{
+    position: absolute;
+    left: 57px;
+    width: 429px;
+    box-sizing: border-box;
+    height: 70px;
+    line-height: 70px;
+    padding: 0 30px;
+    border: none;
+    background: none;
+    font-size: 26px;
+    color: #333333;
+    box-shadow: none;
+    outline: none;
+    caret-color: #A2A2A2;
+    /*-webkit-text-fill-color: transparent;*/
+}
+.footer>input::placeholder{
+    color: #A2A2A2;
+}
+.footer>a{
+    position: absolute;
+    height: 70px;
+    padding: 0 27px;
+    line-height: 70px;
+    right: 0px;
+    color: #827DCF;
+    font-size: 26px;
+}
+.footer>a:hover{
+    cursor: pointer;
+}
+.footer>a:active{
+    opacity: .7;
+}
+.footer>a:before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 30px;
+    background-color: #F1F1F1;
+}
+/* 聊天主体部分 */
+.timer{
+    padding: 31px 0;
+    color: #666666;
+    font-size: 20px;
+    text-align: center;
+}
+.timer>span{
+    color: #7E7E7E;
+}
+/* 聊天列表 */
+.chat-list{
+    padding: 0 40px;
+}
+.chat-list>li:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.chat-list p{
+    display: inline-block;
+    color: #ffffff;
+    font-size: 26px;
+    max-width: 560px;
+    width: auto;
+    line-height: 34px;
+    padding: 18px 34px;
+    border-radius: 10px;
+    background-color: #827DCF;
+    position: relative;
+    margin-bottom: 20px;
+    word-break:break-all
+}
+.chat-list p:not(.self-word):before{
+    content: '';
+    position: absolute;
+    width: 19px;
+    height: 25px;
+    bottom: 5px;
+    left: -18px;
+    background-image: url("./chat_tail.png");
+}
+.chat-list .self-word{
+    color: #666666;
+    background-color: #F1F1F1;
+    float: right;
+}
+.chat-list .self-word:after{
+    content: '';
+    position: absolute;
+    width: 19px;
+    height: 25px;
+    bottom: 5px;
+    right: -18px;
+    background-image: url("./chat_tail_self.png");
+}
+/* 设置按钮 */
+.setting{
+    position: absolute;
+    right:5px;
+    top:70px;
+    border-radius: 3px;
+    background-color: #746FC6;
+    color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+    height: 0;
+    transition: all .3s;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+}
+.setting.show{
+    height: 30px;
+}
+.setting>div{
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+.setting>div:active{
+    opacity: .7;
+}
+.setting input{
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    z-index: 0;
+}
+/* 登录遮罩层 */
+.mask{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.7);
+    display: none;
+}
+.mask.show{
+    display: block;
+}
+.ipt-login{
+    width: 400px;
+    height: 210px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%,-70%);
+    overflow: hidden;
+}
+.ipt-login>h3{
+    height: 50px;
+    line-height: 50px;
+    color: #ffffff;
+    background-color: #746FC6;
+    text-align: center;
+}
+.ipt-login>p{
+    text-align: center;
+    font-weight: 600;
+    padding: 20px 0;
+    color: #746FC6;
+}
+.ipt-login>input{
+    width: 360px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 40px;
+    line-height: 30px;
+    color: #666666;
+    padding: 0 20px;
+    font-weight: 600;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #746FC6;
+    background: none;
+    font-size: 16px;
+    box-shadow: none;
+    outline: none;
+    caret-color: #A2A2A2;
+}
+.ipt-login>input::placeholder{
+    color: #A2A2A2;
+}
+.ipt-login>a{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+    background-color: #746FC6;
+    color: #ffffff;
+    width: 120px;
+    height: 38px;
+    line-height: 38px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+.ipt-login>a:active{
+    opacity: .7;
+}
+/* 提示语 */
+.alert-info{
+    position: fixed;
+    height: 18px;
+    line-height: 18px;
+    padding: 8px 16px;
+    top: -38px;
+    border-radius: 4px;
+    box-shadow: 0 1px 6px rgba(0,0,0,.2);
+    background: #fff;
+    color: #746FC6;
+    font-size: 14px;
+    font-weight: 600;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all .5s;
+}
+.alert-info>i{
+    display: inline-block;
+    margin-right: 8px;
+    width: 14px;
+    height: 14px;
+    background-image: url("./err.png");
+    position: relative;
+    top:1px;
+}
+.alert-info.show{
+    top:16px;
+}

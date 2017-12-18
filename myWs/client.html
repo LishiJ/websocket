@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱逗聊天</title>
+    <link rel="stylesheet" href="client.css">
+    <script src="../js/jquery-1.12.3.min.js"></script>
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script src="./avalon.modern.js"></script>
+</head>
+<body :controller="chat" class="ms-controller">
+<div class="wrap">
+    <div class="container">
+        <div class="header no-select">
+            <img :attr="{src:@user.avatar}" alt="">
+            <span>{{@user.name}}</span>
+            <i :click="@showMenu"></i>
+            <!-- 修改头像 -->
+            <div class="setting">
+                <div><input type="file" id="iptFile" accept="image/*" onmouseover="this.title=''"
+                            :change="@updateAvatar">修改头像
+                </div>
+            </div>
+        </div>
+        <div class="main" id="main">
+            <div class="timer" :html="nowTime">
+            </div>
+            <ul class="chat-list">
+                <li :for="(key,item) in @chatList">
+                    <p :attr="{class:item.uuid == @user.uuid?'self-word':''}">{{item.message}}</p>
+                </li>
+            </ul>
+            <div id="msg_end" style="height:0px; overflow:hidden"></div>
+        </div>
+        <div class="footer">
+            <i></i>
+            <input type="text" placeholder="Message" :duplex="@newMsg" :keyup="@sendMessage | enter">
+            <a class="no-select" :click="@sendMessage">Send</a>
+        </div>
+    </div>
+</div>
+<!-- 登陆遮罩层 -->
+<div class="mask">
+    <div class="ipt-login">
+        <h3>WELCOME</h3>
+        <p>请输入您的昵称</p>
+        <input type="text" placeholder="Please input your name" :duplex="@user.name" :keydown="@updateName |enter">
+        <a class="no-select" :click="@updateName">确定</a>
+    </div>
+</div>
+<!-- 提示语 -->
+<div class="alert-info">
+    <i></i>
+    <span>{{errText}}</span>
+</div>
+<script>
+    // websocket
+    // 更新用户信息
+    function updateUserInfo() {
+        var ws = new WebSocket("ws://localhost:9999");
+        ws.onopen = function () {
+            ws.send(JSON.stringify({
+                'sender':'updateUserInfo',
+                'body':{
+                    "name": chat.user.name,
+                    "uuid": chat.user.uuid,
+                    "avatar": chat.user.avatar
+                }
+            }))
+        };
+    }
+    // 根据用户ip获取用户信息
+    function getUserInfo() {
+        var ws = new WebSocket("ws://localhost:9999");
+        ws.onopen = function () {
+            ws.send(JSON.stringify({
+                'sender':'getUserInfo',
+                'body':{
+                    "uuid": chat.user.uuid
+                }
+            }));
+            ws.onmessage = function (msg) {
+                data = JSON.parse(msg.data);
+                if(data.type == 'get'){
+                    if(data.message != ''){
+                        chat.user.name = data.message.name;
+                        chat.user.avatar = data.message.avatar;
+
+                        if(data.message.name == ''){
+                            $(".mask").addClass('show');
+                        }
+                    }else{
+                        $(".mask").addClass('show');
+                    }
+                }else {
+                    console.log(data.chatLists)
+//                    var obj = {
+//                        message: msg.message,
+//                        uuid: msg.uuid
+//                    };
+                    chat.chatList.pushArray(data.chatLists)
+                    document.getElementById('main').scrollTop = document.getElementById('main').scrollHeight;
+                }
+
+            };
+        };
+    }
+    function sendUserMessage(msg) {
+        var ws = new WebSocket("ws://localhost:9999");
+        ws.onopen = function () {
+            ws.send(msg)
+        };
+    }
+
+
+    // 发送本机ip，检测是否已经登录过
+    getUserInfo();
+
+    var chat = avalon.define({
+        $id: 'chat',
+        user: {
+            name: '',
+            uuid: '',
+            avatar: ''
+        },
+        errText: '',
+        nowTime: '',
+        newMsg: '',
+        chatList: [
+//            {
+//                msg: '我们能在本周晚些时候见面吗？',
+//                uuid: '111.121.5.100'
+//            },
+//            {
+//                msg: '星期五，下午4点，相同的地方吗？',
+//                uuid: '111.121.5.111'
+//            }
+        ],
+        sendMessage: function () {
+            if (this.newMsg != null && this.newMsg != '') {
+                var obj = {
+                    msg: this.newMsg,
+                    uuid: this.user.uuid
+                };
+//                this.chatList.push(obj);
+                var sendmsg = {
+                    "name": this.user.name,
+                    "uuid": this.user.uuid,
+                    "avatar": this.user.avatar,
+                    "message": this.newMsg,
+                    "toUUid":''
+                };
+                sendUserMessage(JSON.stringify({
+                    "sender":'sendUserMessage',
+                    "body":sendmsg
+                }))
+                this.newMsg = '';
+            }
+        },
+        showMenu: function () {
+            $('.setting').toggleClass('show')
+        },
+        updateAvatar: function (file) {
+            var _this = this;
+            console.dir(file)
+            console.dir($("#iptFile"))
+            var freader = new FileReader();
+            freader.readAsDataURL(file.target.files.item(0));
+            freader.onload = function (e) {
+                _this.user.avatar = e.target.result;
+                updateUserInfo(e.target.result)
+            };
+            _this.showMenu();
+        },
+        updateName: function () {
+            var _this = this;
+            if (this.user.name != '' && this.user.name != null) {
+                $(".mask").removeClass('show');
+                updateUserInfo()
+            } else {
+                this.showAlert(this, '昵称不能为空', 2000);
+            }
+        },
+        // 弹出提示语
+        showAlert: function (_this, text, duration) {
+            _this.errText = text;
+            $('.alert-info').addClass('show');
+            setTimeout(function () {
+                $('.alert-info').removeClass('show');
+            }, duration)
+        }
+    });
+    chat.$watch('onReady', function () {
+        var _this = this;
+        // 获取本地ip
+        // document.write(returnCitySN["cip"]+','+returnCitySN["cname"])
+        this.user.uuid = returnCitySN["cip"];
+        // 获取当前时间
+        var tt = new Date();
+        // 转换成Thursday <span>6:34 pm</span>
+        var week = tt.getDay();
+        week = week ==0?'Monday':week ==1?'Tuesday':week ==2?'Wednesday':week ==3?'Thursday':week ==4?'Friday':week ==5?'Saturday':week ==6?'Sunday':'';
+        var time ="<span>"+tt.getHours() + ':' + tt.getMinutes()+"</span>";
+        this.nowTime = week+' '+time;
+
+    })
+</script>
+</body>
+</html>
