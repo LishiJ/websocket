@@ -4,10 +4,12 @@
 
 ### 使用
 
+```
 clone
 
 cd websocket/myWs
 
 node server
+```
 
 ![Image text](https://github.com/LishiJ/websocket/blob/master/myWs/Paste%20Image.png)
