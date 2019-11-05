@@ -12,4 +12,4 @@ cd websocket/myWs
 node server
 ```
 
-![Image text](https://github.com/LishiJ/websocket/blob/master/myWs/Paste%20Image.png)
+![Image text](https://cdn.jsdelivr.net/gh/seiwhale/websocket/myWs/Paste%20Image.png)
